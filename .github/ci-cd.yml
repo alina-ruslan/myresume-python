@@ -1,0 +1,27 @@
+name: build push and deploy image 
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:   #u can put variables here
+  AWS_REGION: us-east-1
+  AWS_ROLE: ${{ secrets.AWS_ACTIONS_ROLE }}
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # github shared runner  
+    steps:
+      - name: clone repo
+        uses: actions/checkout@v3  #Action is prebuild code, u can use it in your workflow
+      - name: aws cred config 
+        uses: aws-actions/configure-aws-credentials@v4 
+        with:
+          role-to-assume: ${{ env.AWS_ROLE}}  #openID of the role
+          aws-region: ${{ env.AWS_REGION }}
+      - name: login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        
