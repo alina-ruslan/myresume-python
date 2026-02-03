@@ -13,7 +13,10 @@ env:   #u can put variables here
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # github shared runner  
+    runs-on: ubuntu-latest  # github shared runner 
+    permissions:  # ⚠️ THIS IS CRITICAL
+      id-token: write    # Required for OIDC
+      contents: read     # Required to checkout code 
     steps:
       - name: clone repo
         uses: actions/checkout@v3  #Action is prebuild code, u can use it in your workflow
