@@ -63,6 +63,6 @@ jobs:
             script: |
                 docker stop resume || echo ""
                 docker rm resume || echo ""
-                docker run -d --name resume -p 8080:80 $IMAGE
+                docker run -d --name resume -p 80 $IMAGE
 
     
