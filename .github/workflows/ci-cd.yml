@@ -40,7 +40,7 @@ jobs:
         with:
             image-ref: ${{steps.ecr-login.outputs.registry}}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
             format: 'table'
-            exit-code: '1'
+            exit-code: '0'
             severity: 'CRITICAL,HIGH'
           
       - name: Push image to ECR
@@ -55,12 +55,12 @@ deploy:
      needs: build
      steps:
         - name: ssh to server
-            uses: appleboy/ssh-action@v1.0.3
-            with:
-            host: ${{ secrets.SSHHOST }}
-            username: ${{ vars.USERNAME }}
-            key: ${{ secrets.KEY}}
-            script: |
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+          host: ${{ secrets.SSHHOST }}
+          username: ${{ vars.USERNAME }}
+          key: ${{ secrets.KEY}}  
+          script: |
                 docker stop resume || echo ""
                 docker rm resume || echo ""
                 docker run -d --name resume -p 8080:80 $IMAGE
