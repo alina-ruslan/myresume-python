@@ -1,4 +1,4 @@
-name: build push and deploy image 
+name: build push and deploy image     #push to ecr and deploy to ecs
 
 on:
   push:
@@ -11,6 +11,11 @@ env:   #u can put variables here
   AWS_ROLE: ${{ secrets.AWS_ACTIONS_ROLE }}
   ECR_REPO_NAME: dev
   IMAGE_TAG: ${{ github.run_number }}
+  ECS_CLUSTER: nginx-task
+  ECS_SERVICE: nginx-service
+  TASK_DEFINITION: nginx-task
+  CONTAINER_NAME: nginx
+
 
 jobs:
   build:
@@ -54,15 +59,15 @@ jobs:
      runs-on: ubuntu-latest
      needs: build
      steps:
-        - name: ssh to server
-          uses: appleboy/ssh-action@v1.0.3
-          with:
-            host: ${{ secrets.SSHHOST }}
-            username: ${{ vars.USERNAME }}
-            key: ${{ secrets.KEY}}  
-            script: |
-                docker stop resume || echo ""
-                docker rm resume || echo ""
-                docker run -d --name resume -p 80 $IMAGE
+       - name: Deploy to ECS service
+         id: deploy-service
+         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+         with:
+          task-definition: ${{ steps.update-task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+          force-new-deployment: true
 
+    
     
