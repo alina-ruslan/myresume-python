@@ -55,22 +55,15 @@ jobs:
       - name: store image in guthub env 
         run: echo "IMAGE=${{steps.ecr-login.outputs.registry}}/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
 
-  deploy:
-     runs-on: ubuntu-latest
-     needs: build
-     permissions:
-      id-token: write
-      contents: read
-     environment: production
-    
-     steps:
+deploy:
+  needs: build
+     steps: 
       - name: Checkout code
         uses: actions/checkout@v3
-        
-      - name: Configure AWS credentials via OIDC
+      - name: aws cred config 
         uses: aws-actions/configure-aws-credentials@v4 
         with:
-          role-to-assume: ${{ env.AWS_ROLE }}
+          role-to-assume: ${{ env.AWS_ROLE}}  #openID of the role
           aws-region: ${{ env.AWS_REGION }}
           
       - name: Download existing task definition
@@ -85,7 +78,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ needs.build.outputs.IMAGE }}
+          image: ${{ needs.build.outputs.image }}
           
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -95,17 +88,10 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
           force-new-deployment: true
-          
-      - name: Verify deployment
-        run: |
-          echo "✅ Deployment completed!"
-          echo "📦 Image deployed: ${{ needs.build.outputs.IMAGE }}"
-          echo ""
-          echo "📊 Checking service status..."
-          aws ecs describe-services \
-            --cluster ${{ env.ECS_CLUSTER }} \
-            --services ${{ env.ECS_SERVICE }} \
-            --query 'services[0].[serviceName,status,runningCount,desiredCount]' \
-            --output table
+
+     
+
+
+    
     
     
