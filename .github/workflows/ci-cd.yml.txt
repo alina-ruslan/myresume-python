@@ -62,7 +62,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: aws cred config 
-        uses: aws-actions/configure-aws-credentials@v4 
+        uses:  aws-actions/configure-aws-credentials@v4       
         with:
           role-to-assume: ${{ env.AWS_ROLE}}  #openID of the role
           aws-region: ${{ env.AWS_REGION }}
