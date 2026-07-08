@@ -2,8 +2,8 @@ name: Build and push to ecr
 
 on:
   push:
-    pull_request:
-      branches: ['main','dev']
+    #pull_request:
+      #branches: ['main','dev']
       branches: ['main']
 
 
@@ -30,4 +30,4 @@ job:
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
      - name: Push image to ecr 
-        run : echo "pushing image to ecr"  
+         run: echo "pushing image to ecr"  
