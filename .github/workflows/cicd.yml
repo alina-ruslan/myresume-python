@@ -49,3 +49,10 @@ jobs:
 
       - name: Push Docker image to Amazon ecr
         run: docker push 982081084137.dkr.ecr.us-east-1.amazonaws.com/dev:latest
+
+  deploy_to_ecs:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Deploy to ecs
+          run: echo "Deploying to ECS"
+          
