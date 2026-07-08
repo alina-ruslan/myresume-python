@@ -27,7 +27,8 @@ jobs:
           severity: CRITICAL,HIGH
 
       - name: Build Docker image
-        run: docker build -t 982081084137.dkr.ecr.us-east-1.amazonaws.com/dev:latest .
+        run: |
+            docker build -t 982081084137.dkr.ecr.us-east-1.amazonaws.com/dev:latest .
 
       - name: Trivy Docker image scan
         uses: aquasecurity/trivy-action@v0.36.0
@@ -47,4 +48,4 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Push Docker image to Amazon ecr
-        run: 982081084137.dkr.ecr.us-east-1.amazonaws.com/dev:latest
+        run: docker push 982081084137.dkr.ecr.us-east-1.amazonaws.com/dev:latest
