@@ -36,4 +36,5 @@ jobs:
           exit-code: 0
           ignore-unfixed: true
           severity: CRITICAL,HIGH
-      
+      - name: Push Docker image to Amazon ECR
+        uses: echo "Pushing Docker image to Amazon ECR"
